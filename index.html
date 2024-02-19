@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button onclick="getFollowings()">Click here</button>
+  <div class="display-js"></div>
+  <script>
+    const displayEl = document.querySelector('.display-js');
+
+    async function getFollowings() {
+      try {
+        const response = await fetch('http://localhost:3000/followings');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        const followings = [];
+        responseData.forEach(item => {
+          followings.push(item.following_name);
+        });
+
+        const olElement = document.createElement('ol');
+        followings.forEach(following => {
+          const liElement = document.createElement('li');
+          liElement.textContent = following;
+          olElement.appendChild(liElement);
+        });
+
+        displayEl.appendChild(olElement);
+
+        console.log(followings);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>

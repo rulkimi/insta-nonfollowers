@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <button onclick="getFollowings()">Click here</button>
+  <!-- <button onclick="getFollowings()">Click here</button> -->
   <div class="display-js"></div>
   <script>
     const displayEl = document.querySelector('.display-js');
@@ -23,13 +23,13 @@
 
         const followings = [];
         responseData.forEach(item => {
-          followings.push(item.following_name);
+          followings.push({ name: item.following_name, link: item.following_link });
         });
 
         const olElement = document.createElement('ol');
         followings.forEach(following => {
           const liElement = document.createElement('li');
-          liElement.textContent = following;
+          liElement.innerHTML = `<a href="${following.link}" target="_blank">${following.name}</a>`;
           olElement.appendChild(liElement);
         });
 
@@ -40,6 +40,8 @@
         console.error(error);
       }
     }
+
+    getFollowings();
   </script>
 </body>
 </html>

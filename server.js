@@ -13,7 +13,7 @@ const db = new sqlite3.Database('connections.db');
 
 app.get('/followings', (req, res) => {
   let sql = ` 
-    SELECT flwng.name AS following_name
+    SELECT flwng.name AS following_name, flwng.link AS following_link
     FROM following AS flwng
     LEFT JOIN followers AS flwrs ON flwng.name = flwrs.name
     WHERE flwrs.name IS NULL;           

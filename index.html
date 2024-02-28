@@ -9,23 +9,33 @@
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
-  <div id="app">
-    <h1>Compare JSON Files on Client Side</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label for="followersFileInput">Upload followers_1.json:</label>
-      <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
+<div id="app" class="container">
+    <div class="form-container">
+      <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
+        <div class="mb-3">
+          <label for="followersFileInput" class="form-label">Upload followers_1.json:</label>
+          <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
+        </div>
 
-      <label for="followingsFileInput">Upload followings.json:</label>
-      <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
+        <div class="mb-3">
+          <label for="followingsFileInput" class="form-label">Upload followings.json:</label>
+          <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
+        </div>
 
-      <button class="btn btn-primary" type="button" @click="compareFiles">Compare Files</button>
-    </form>
-    <div class="js-display">
-      <ol>
-        <li v-for="unfollower in notInFollowers" :key="unfollower.value">
-          <a :href="unfollower.href" target="_blank">{{ unfollower.value }}</a>
-        </li>
-      </ol>
+        <button class="btn btn-primary" type="button" @click="compareFiles">Compare Files</button>
+      </form>
+
+      <div v-if="notInFollowers.length" class="mt-2">
+        <span class="text-primary fw-bold">Unfollowers</span>
+        <ol class="list-group">
+          <li @click="navigateToLink(unfollower.href)" class="list-group-item" v-for="unfollower in notInFollowers" :key="unfollower.value" style="cursor: pointer;">
+            <a :href="unfollower.href" target="_blank" class="text-decoration-none text-dark">
+              {{ unfollower.value }}
+            </a>
+          </li>
+        </ol>
+      </div>      
+      
     </div>
   </div>
   <script type="module">
@@ -42,6 +52,9 @@
         };
       },
       methods: {
+        navigateToLink(link) {
+          window.open(link, '_blank');
+        },
         validateFile(inputId, expectedFileName) {
           const inputElement = document.getElementById(inputId);
           const file = inputElement.files[0];
@@ -104,7 +117,16 @@
         }
       }
     }).mount('#app');
-
   </script>
+  <style>
+    /* Add your custom styles here */
+    body {
+      background-color: #f8f9fa; /* Light gray background */
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+    }
+  </style>
 </body>
 </html>

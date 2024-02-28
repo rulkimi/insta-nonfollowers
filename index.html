@@ -13,13 +13,21 @@
   <div id="app">
     <h1>Compare JSON Files on Client Side</h1>
     <form id="uploadForm" enctype="multipart/form-data">
-      <label for="file1Input">Upload followers_1.json:</label>
-      <input type="file" name="file1Input" id="file1Input" accept=".json" @change="validateFile('file1Input', 'followers_1.json')">
-      <label for="file2Input">Upload following.json:</label>
-      <input type="file" name="file2Input" id="file2Input" accept=".json" @change="validateFile('file2Input', 'following.json')">
+      <label for="followersFileInput">Upload followers_1.json:</label>
+      <input v-model="followersFile" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
+
+      <label for="followingsFileInput">Upload followings.json:</label>
+      <input v-model="followingsFile" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
+
       <button type="button" @click="compareFiles">Compare Files</button>
     </form>
-    <div class="js-display"></div>
+    <div class="js-display">
+      <ol>
+        <li v-for="unfollower in notInFollowers" :key="unfollower.value">
+          <a :href="unfollower.href" target="_blank">{{ unfollower.value }}</a>
+        </li>
+      </ol>
+    </div>
   </div>
   <script type="module">
     import { $viewport } from './plugins.js';
@@ -27,6 +35,13 @@
     const { createApp, ref } = Vue;
 
     createApp({
+      data() {
+        return {
+          followersFile: '',
+          followingsFile: '',
+          notInFollowers: [],
+        };
+      },
       methods: {
         validateFile(inputId, expectedFileName) {
           const inputElement = document.getElementById(inputId);
@@ -43,8 +58,8 @@
           }
         },
         compareFiles() {
-          const file1Input = document.getElementById('file1Input');
-          const file2Input = document.getElementById('file2Input');
+          const file1Input = document.getElementById('followersFileInput');
+          const file2Input = document.getElementById('followingsFileInput');
 
           const file1 = file1Input.files[0];
           const file2 = file2Input.files[0];
@@ -60,19 +75,10 @@
                 const file2Content = e2.target.result;
 
                 // Perform the comparison using the provided function
-                const notInFollowers = this.compareFollowersAndFollowing(file1Content, file2Content);
-
-                const olElement = document.createElement('ol');
-                notInFollowers.forEach(unfollower => {
-                  const liElement = document.createElement('li');
-                  liElement.innerHTML = `<a href="${unfollower.href}" target="_blank">${unfollower.value}</a>`;
-                  olElement.appendChild(liElement);
-                });
-
-                displayEl.appendChild(olElement);
+                this.notInFollowers = this.compareFollowersAndFollowing(file1Content, file2Content);
 
                 // Output the result
-                console.log('Entries present in following but not in followers:', notInFollowers);
+                console.log('Entries present in following but not in followers:', this.notInFollowers);
                 alert('Comparison completed successfully! Results will be printed on the screen soon.');
               };
 

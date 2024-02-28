@@ -14,10 +14,10 @@
     <h1>Compare JSON Files on Client Side</h1>
     <form id="uploadForm" enctype="multipart/form-data">
       <label for="followersFileInput">Upload followers_1.json:</label>
-      <input v-model="followersFile" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
+      <input type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
 
       <label for="followingsFileInput">Upload followings.json:</label>
-      <input v-model="followingsFile" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
+      <input type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
 
       <button type="button" @click="compareFiles">Compare Files</button>
     </form>
@@ -37,8 +37,6 @@
     createApp({
       data() {
         return {
-          followersFile: '',
-          followingsFile: '',
           notInFollowers: [],
         };
       },

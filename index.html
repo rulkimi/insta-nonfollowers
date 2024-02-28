@@ -58,34 +58,34 @@
           }
         },
         compareFiles() {
-          const file1Input = document.getElementById('followersFileInput');
-          const file2Input = document.getElementById('followingsFileInput');
+          const followersFileInput = document.getElementById('followersFileInput');
+          const followingsFileInput = document.getElementById('followingsFileInput');
 
-          const file1 = file1Input.files[0];
-          const file2 = file2Input.files[0];
+          const followersJSON = followersFileInput.files[0];
+          const followingsJSON = followingsFileInput.files[0];
 
-          if (file1 && file2) {
+          if (followersJSON && followingsJSON) {
             // Use FileReader to read the content of the files
-            const reader1 = new FileReader();
-            const reader2 = new FileReader();
+            const followersFileReader = new FileReader();
+            const followingsFileReader = new FileReader();
 
-            reader1.onload = (e1) => {
-              reader2.onload = (e2) => {
-                const file1Content = e1.target.result;
-                const file2Content = e2.target.result;
+            followersFileReader.onload = (e1) => {
+              followingsFileReader.onload = (e2) => {
+                const followersContent = e1.target.result;
+                const followingsContent = e2.target.result;
 
                 // Perform the comparison using the provided function
-                this.notInFollowers = this.compareFollowersAndFollowing(file1Content, file2Content);
+                this.notInFollowers = this.compareFollowersAndFollowing(followersContent, followingsContent);
 
                 // Output the result
                 console.log('Entries present in following but not in followers:', this.notInFollowers);
                 alert('Comparison completed successfully! Results will be printed on the screen soon.');
               };
 
-              reader2.readAsText(file2);
+              followingsFileReader.readAsText(followingsJSON);
             };
 
-            reader1.readAsText(file1);
+            followersFileReader.readAsText(followersJSON);
           } else {
             alert('Please select both files.');
           }

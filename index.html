@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compare JSON Files on Client Side</title>
 
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
@@ -40,7 +40,7 @@
   </div>
   <script type="module">
     import { $viewport } from './plugins.js';
-    import './node_modules/bootstrap/dist/js/bootstrap.bundle.js';
+    import 'bootstrap/dist/js/bootstrap.bundle.js';
 
     const displayEl = document.querySelector('.js-display');
     const { createApp, ref } = Vue;

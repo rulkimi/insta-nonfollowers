@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Non-Followers Tracker</title>
   <link rel="icon" href="favicon.png">
 
@@ -49,12 +49,12 @@
       <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
         <div class="mb-3">
           <label for="followersFileInput" class="form-label">Upload <span class="text-primary fw-bold">followers_1.json</span>:</label>
-          <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
+          <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" @change="validateFile('followersFileInput', 'followers_1.json')">
         </div>
 
         <div class="mb-3">
           <label for="followingsFileInput" class="form-label">Upload <span class="text-primary fw-bold">following.json</span>:</label>
-          <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
+          <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" @change="validateFile('followingsFileInput', 'following.json')">
         </div>
 
         <button class="btn btn-primary w-100 fw-bold" type="button" @click="compareFiles">Compare Files</button>

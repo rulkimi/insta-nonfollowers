@@ -47,12 +47,12 @@
 
       <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
         <div class="mb-3">
-          <label for="followersFileInput" class="form-label">Upload followers_1.json:</label>
+          <label for="followersFileInput" class="form-label">Upload <span class="text-primary fw-bold">followers_1.json</span>:</label>
           <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" accept=".json" @change="validateFile('followersFileInput', 'followers_1.json')">
         </div>
 
         <div class="mb-3">
-          <label for="followingsFileInput" class="form-label">Upload followings.json:</label>
+          <label for="followingsFileInput" class="form-label">Upload <span class="text-primary fw-bold">following.json</span>:</label>
           <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
         </div>
 
@@ -60,16 +60,29 @@
         <button class="btn btn-secondary w-100 fw-bold mt-2" type="button" @click="nextStep = false">Previous</button>
       </form>
 
-      <div v-if="notInFollowers.length" class="mt-2">
-        <span class="text-primary fw-bold">Unfollowers</span>
+      <div v-if="notInFollowers.length" class="mt-4">
+        <h2 class="text-center text-primary fw-bold">Non-followers</h2>
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="d-flex flex-column mb-2">
+            <span class="text-primary fw-bold">Accounts</span>
+          </div>
+          <div class="text-muted mb-2">
+            Followed Since
+          </div>
+        </div>        
         <ol class="list-group">
-          <li @click="navigateToLink(unfollower.href)" class="list-group-item" v-for="unfollower in notInFollowers" :key="unfollower.value" style="cursor: pointer;">
-            <a :href="unfollower.href" target="_blank" class="text-decoration-none text-dark">
-              {{ unfollower.value }}
-            </a>
+          <li @click="navigateToLink(unfollower.href)" class="list-group-item d-flex justify-content-between align-items-start" v-for="unfollower in notInFollowers" :key="unfollower.value" style="cursor: pointer;">
+            <div class="d-flex flex-column">
+              <a :href="unfollower.href" target="_blank" class="text-decoration-none text-dark">
+                {{ unfollower.value }}
+              </a>
+            </div>
+            <div class="text-muted">
+              {{ timestampToDate(unfollower.timestamp) }}
+            </div>
           </li>
-        </ol>
-      </div>      
+        </ol>                
+      </div>        
       
     </div>
   </div>
@@ -85,6 +98,13 @@
         };
       },
       methods: {
+        timestampToDate(timestamp) {
+          const unixTimestamp = timestamp;
+          const date = new Date(unixTimestamp * 1000);
+          const options = { month: 'short', day: 'numeric', year: 'numeric' };
+          const formattedDate = date.toLocaleString('en-US', options);
+          return formattedDate;
+        },
         navigateToLink(link) {
           window.open(link, '_blank');
         },
@@ -140,8 +160,8 @@
           const followingData = JSON.parse(file2Content);
 
           // Extract usernames and href from followers and following
-          const followersInfo = followersData.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href }));
-          const followingInfo = followingData.relationships_following.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href }));
+          const followersInfo = followersData.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href, timestamp: entry.string_list_data[0]?.timestamp }));
+          const followingInfo = followingData.relationships_following.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href, timestamp: entry.string_list_data[0]?.timestamp }));
 
           // Find entries in following but not in followers
           return followingInfo.filter(followingEntry =>
@@ -152,9 +172,8 @@
     }).mount('#app');
   </script>
   <style>
-    /* Add your custom styles here */
     body {
-      background-color: #fafafa; /* Light gray background */
+      background-color: #fafafa;
     }
     .container {
       max-width: 600px;

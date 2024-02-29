@@ -11,20 +11,37 @@
 <body>
   <div id="app" class="container">
     <div v-if="!nextStep" class="container text-start">
-      <h1 class="mb-4">Instagram Unfollowers Checker</h1>
+      <h2 class="mb-2 mt-4 text-primary text-center">Instagram Unfollowers Checker</h2>
       <div class="card p-4">
         <p class="lead">Follow these steps to find users who don't follow you back on Instagram:</p>
-        <ol class="list-group list-group-flush text-left">
-          <li class="list-group-item"><strong>Log into Instagram:</strong> Open the Instagram app or visit the website and log into your account.</li>
-          <li class="list-group-item"><strong>Visit <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank">Instagram Data Download</a>:</strong> Request a download of your data from the Instagram Data Download page.</li>
-          <li class="list-group-item"><strong>Select "followers and following" under "connections":</strong> Choose the "followers and following" option in the "connections" section. Opt for "JSON" format with low media quality, and choose all-time data.</li>
-          <li class="list-group-item"><strong>Visit <a href="https://rulkimi.github.io/insta-nonfollowers/" target="_blank">Instagram Unfollowers Checker</a>:</strong> Go to the Instagram Unfollowers Checker website.</li>
-          <li class="list-group-item"><strong>Upload the relevant files:</strong> Upload the downloaded "followers_1.json" and "followings.json" files using the file input fields.</li>
-          <li class="list-group-item"><strong>Click 'Compare followers':</strong> Press the "Compare Files" button to initiate the comparison process.</li>
-        </ol>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td><strong>1.</strong></td>
+              <td><strong>Log into Instagram:</strong> Open Instagram (website, in browser), and log into your account.</td>
+            </tr>
+            <tr>
+              <td><strong>2.</strong></td>
+              <td><strong>Visit <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank">Instagram Data Download</a>:</strong> Request your data download on this page.</td>
+            </tr>
+            <tr>
+              <td><strong>3.</strong></td>
+              <td><strong>Select "followers and following" under "connections":</strong> Choose "followers and following" in the "connections" section. Opt for "JSON" format, and select all-time data for "Date Range".</td>
+            </tr>
+            <tr>
+              <td><strong>4.</strong></td>
+              <td><strong>Check your email:</strong> You'll receive an email containing a .zip file.</td>
+            </tr>
+            <tr>
+              <td><strong>5.</strong></td>
+              <td><strong>Extract and locate files:</strong> Extract the zip file, find "following.json" and "followers_1.json".</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <button class="btn btn-primary w-100 fw-bold mt-2" @click="nextStep = true">Next</button>
-    </div> 
+    </div>
+    
 
     <div v-else class="container">
 
@@ -40,6 +57,7 @@
         </div>
 
         <button class="btn btn-primary w-100 fw-bold" type="button" @click="compareFiles">Compare Files</button>
+        <button class="btn btn-secondary w-100 fw-bold mt-2" type="button" @click="nextStep = false">Previous</button>
       </form>
 
       <div v-if="notInFollowers.length" class="mt-2">

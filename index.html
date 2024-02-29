@@ -9,8 +9,25 @@
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
-<div id="app" class="container">
-    <div class="form-container">
+  <div id="app" class="container">
+    <div v-if="!nextStep" class="container text-start">
+      <h1 class="mb-4">Instagram Unfollowers Checker</h1>
+      <div class="card p-4">
+        <p class="lead">Follow these steps to find users who don't follow you back on Instagram:</p>
+        <ol class="list-group list-group-flush text-left">
+          <li class="list-group-item"><strong>Log into Instagram:</strong> Open the Instagram app or visit the website and log into your account.</li>
+          <li class="list-group-item"><strong>Visit <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank">Instagram Data Download</a>:</strong> Request a download of your data from the Instagram Data Download page.</li>
+          <li class="list-group-item"><strong>Select "followers and following" under "connections":</strong> Choose the "followers and following" option in the "connections" section. Opt for "JSON" format with low media quality, and choose all-time data.</li>
+          <li class="list-group-item"><strong>Visit <a href="https://rulkimi.github.io/insta-nonfollowers/" target="_blank">Instagram Unfollowers Checker</a>:</strong> Go to the Instagram Unfollowers Checker website.</li>
+          <li class="list-group-item"><strong>Upload the relevant files:</strong> Upload the downloaded "followers_1.json" and "followings.json" files using the file input fields.</li>
+          <li class="list-group-item"><strong>Click 'Compare followers':</strong> Press the "Compare Files" button to initiate the comparison process.</li>
+        </ol>
+      </div>
+      <button class="btn btn-primary w-100 fw-bold mt-2" @click="nextStep = true">Next</button>
+    </div> 
+
+    <div v-else class="container">
+
       <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
         <div class="mb-3">
           <label for="followersFileInput" class="form-label">Upload followers_1.json:</label>
@@ -22,7 +39,7 @@
           <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" accept=".json" @change="validateFile('followingsFileInput', 'following.json')">
         </div>
 
-        <button class="btn btn-primary" type="button" @click="compareFiles">Compare Files</button>
+        <button class="btn btn-primary w-100 fw-bold" type="button" @click="compareFiles">Compare Files</button>
       </form>
 
       <div v-if="notInFollowers.length" class="mt-2">
@@ -38,15 +55,14 @@
       
     </div>
   </div>
-  <script type="module">
-    import { $viewport } from './plugins.js';
 
-    const displayEl = document.querySelector('.js-display');
+  <script type="module" defer>
     const { createApp, ref } = Vue;
 
     createApp({
       data() {
         return {
+          nextStep: false,
           notInFollowers: [],
         };
       },
@@ -120,9 +136,9 @@
   <style>
     /* Add your custom styles here */
     body {
-      background-color: #f8f9fa; /* Light gray background */
+      background-color: #fafafa; /* Light gray background */
     }
-    .form-container {
+    .container {
       max-width: 600px;
       margin: auto;
     }

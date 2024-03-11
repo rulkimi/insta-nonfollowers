@@ -71,7 +71,8 @@
           <div class="text-muted mb-2">
             Followed Since
           </div>
-        </div>        
+        </div>
+        <button class="btn btn-success w-100 fw-bold my-2" @click="downloadHTML">Download HTML</button>        
         <ol class="list-group">
           <li @click="navigateToLink(unfollower.href)" class="list-group-item d-flex justify-content-between align-items-start" v-for="unfollower in notInFollowers" :key="unfollower.value" style="cursor: pointer;">
             <div class="d-flex flex-column">
@@ -114,6 +115,57 @@
         };
       },
       methods: {
+        downloadHTML() {
+          const data = this.generateHTML();
+
+          const blob = new Blob([data], { type: 'text/html' });
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = 'non-followers.html';
+          link.click();
+        },
+        generateHTML() {
+          const accounts = [];
+
+          this.notInFollowers.forEach(unfollower => {
+            const listItem = `
+              <li style="cursor: pointer; list-style-type: none; margin-bottom: 5px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                  <div style="display: flex; flex-direction: column; margin-bottom: 2px;">
+                    <a href="${unfollower.href}" target="_blank">
+                      ${unfollower.value}
+                    </a>
+                  </div>
+                  <div style="color: #6c757d;">
+                    ${this.timestampToDate(unfollower.timestamp)}
+                  </div>
+                </div>
+              </li>
+            `;
+            accounts.push(listItem);
+          });
+
+          const HTMLContent = `
+            <div style="justify-content: center; align-items: center; background-color: #f8f9fa;">
+              <div style="margin: 0 auto; width: 80%; max-width: 600px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <h2 style="text-align: center; color: #0d6efd; font-weight: bold;" class="text-primary fw-bold">Non-followers</h2>
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="color: #0d6efd; font-weight: bold;" class="text-primary fw-bold">Accounts</span>
+                  </div>
+                  <div style="color: #6c757d;">
+                    Followed Since
+                  </div>
+                </div>
+                <ol style="list-style-type: none; padding: 0;" class="list-group">
+                  ${accounts.join('')}
+                </ol>
+              </div>
+            </div>
+          `;
+
+          return HTMLContent;
+        },
         timestampToDate(timestamp) {
           const unixTimestamp = timestamp;
           const date = new Date(unixTimestamp * 1000);

@@ -1,138 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Non-Followers Tracker</title>
-  <link rel="icon" href="favicon.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Non-Followers Tracker</title>
+    <link rel="icon" href="favicon.png" />
 
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</head>
-<body>
-  <div id="app" class="container">
-    <div v-if="!nextStep" class="container text-start">
-      <h2 class="mb-2 mt-4 text-primary text-center">Instagram Non-Followers Tracker</h2>
-      <div class="card p-4">
-        <p class="lead">Follow these steps to find users who don't follow you back on Instagram:</p>
-        <table class="table">
-          <tbody>
-            <tr>
-              <td><strong>1.</strong></td>
-              <td><strong>Log into Instagram:</strong> Open Instagram in your web browser and log into your account.</td>
-            </tr>
-            <tr>
-              <td><strong>2.</strong></td>
-              <td><strong>Visit <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank">Instagram Data Download</a>:</strong> Request your data download from this page.</td>
-            </tr>
-            <tr>
-              <td><strong>3.</strong></td>
-              <td><strong>Select "Followers and Following" under "Connections":</strong> Choose to download "Some of your information", then scroll down to the "Connections" section.</td>
-            </tr>
-            <tr>
-              <td><strong>4.</strong></td>
-              <td><strong>Download Data:</strong> In the "Connections" section, select "Followers and Following". Choose to download to your device, opt for the "JSON" format, and select "All-time" for the "Date Range". You can choose to download in low quality.</td>
-            </tr>
-            <tr>
-              <td><strong>5.</strong></td>
-              <td><strong>Check your Email:</strong> You will receive an email notifying you when your data is ready. Follow the instructions in the email to download your data from the website.</td>
-            </tr>
-            <tr>
-              <td><strong>6.</strong></td>
-              <td><strong>Extract and Locate Files:</strong> Extract the downloaded ZIP file, then locate the "following.json" and "followers_1.json" files.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <button class="btn btn-primary w-100 fw-bold mt-2" @click="nextStep = true">Next</button>
-    </div>
-    
-
-    <div v-else class="container mt-4">
-
-      <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
-        <div class="mb-3">
-          <label for="followersFileInput" class="form-label">Upload <span class="text-primary fw-bold">followers_1.json</span>:</label>
-          <input class="form-control" type="file" name="followersFileInput" id="followersFileInput" @change="validateFile('followersFileInput', 'followers_1.json')">
-        </div>
-
-        <div class="mb-3">
-          <label for="followingsFileInput" class="form-label">Upload <span class="text-primary fw-bold">following.json</span>:</label>
-          <input class="form-control" type="file" name="followingsFileInput" id="followingsFileInput" @change="validateFile('followingsFileInput', 'following.json')">
-        </div>
-
-        <button class="btn btn-primary w-100 fw-bold" type="button" @click="compareFiles">Compare Files</button>
-        <button class="btn btn-secondary w-100 fw-bold mt-2" type="button" @click="nextStep = false">Previous</button>
-      </form>
-
-      <div v-if="notInFollowers.length" class="mt-4">
-        <h2 class="text-center text-primary fw-bold">Non-followers</h2>
-        <div class="d-flex justify-content-between align-items-start">
-          <div class="d-flex flex-column mb-2">
-            <span class="text-primary fw-bold">Accounts</span>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div id="app" class="container mx-auto p-4 flex flex-col h-screen justify-between">
+      
+      <main>
+        <div v-if="!nextStep" class="text-left">
+          <h2 class="mb-4 mt-6 text-2xl text-center font-bold text-blue-600">
+            Instagram Non-Followers Tracker
+          </h2>
+          <div class="bg-white shadow-md rounded-lg p-6">
+            <p class="text-lg font-semibold mb-4">
+              Follow these steps to find users who don't follow you back on Instagram:
+            </p>
+            <ol class="list-decimal list-inside divide-y divide-gray-200">
+              <li class="py-4">
+                <span class="font-bold">Log into Instagram:</span> Open Instagram in your web browser and log into your account.
+              </li>
+              <li class="py-4">
+                <span class="font-bold">Visit <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank" class="text-blue-500 underline">Instagram Data Download</a>:</span> Request your data download from this page.
+              </li>
+              <li class="py-4">
+                <span class="font-bold">Select "Followers and Following" under "Connections":</span> Choose to download "Some of your information", then scroll down to the "Connections" section.
+              </li>
+              <li class="py-4">
+                <span class="font-bold">Download Data:</span> Select "Followers and Following" in JSON format and choose "All-time" for the date range.
+              </li>
+              <li class="py-4">
+                <span class="font-bold">Check your Email:</span> Follow the instructions in the email to download your data.
+              </li>
+              <li class="py-4">
+                <span class="font-bold">Extract and Locate Files:</span> Locate the "following.json" and "followers_1.json" files.
+              </li>
+            </ol>
           </div>
-          <div class="text-muted mb-2">
-            Followed Since
-          </div>
+          <button
+            class="bg-gradient-to-t from-blue-600 to-blue-400 shadow-lg hover:shadow-none cursor-pointer text-white font-bold py-2 px-4 mt-4 rounded-md w-full"
+            @click="nextStep = true"
+          >
+            Next
+          </button>
         </div>
-        <button class="btn btn-success w-100 fw-bold my-2" @click="downloadHTML">Download HTML</button>        
-        <ol class="list-group">
-          <li @click="navigateToLink(unfollower.href)" class="list-group-item d-flex justify-content-between align-items-start" v-for="unfollower in notInFollowers" :key="unfollower.value" style="cursor: pointer;">
-            <div class="d-flex flex-column">
-              <a :href="unfollower.href" target="_blank" class="text-decoration-none text-dark">
-                {{ unfollower.value }}
-              </a>
+
+        <form v-else-if="!notInFollowers.length" id="uploadForm" enctype="multipart/form-data" class="space-y-4">
+      
+          <div class="space-y-1">
+            <p class="text-blue-500 font-semibold">Upload the files:</p>
+            <div class="flex gap-2">
+              <label class="flex flex-grow w-1/2 flex-col gap-1">
+                <div
+                  class="px-2 py-1 border rounded-md cursor-pointer flex items-center justify-between hover:bg-gray-100"
+                  :class="fileOneError ? 'border-red-500' : 'border-gray-300'"
+                >
+                  <span class="text-gray-500">followers_1.json</span>
+                  <svg :class="fileOneUploaded ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <circle cx="10" cy="10" r="10" fill="green"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  </svg>
+                </div>
+                <input
+                  class="hidden"
+                  type="file"
+                  id="followersFileInput"
+                  @change="validateFile('followersFileInput', 'followers_1.json')"
+                >
+                <span v-if="fileOneError" class="text-xs text-red-500 text-wrap">{{ fileOneError }}</span>
+              </label>
+              <label class="flex flex-grow w-1/2 flex-col gap-1">
+                <div
+                  class="px-2 py-1 border rounded-md cursor-pointer flex items-center justify-between hover:bg-gray-100"
+                  :class="fileTwoError ? 'border-red-500' : 'border-gray-300'"
+                >
+                  <span class="text-gray-500">following.json</span>
+                  <svg :class="fileTwoUploaded ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <circle cx="10" cy="10" r="10" fill="green"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  </svg>
+                </div>
+                <input
+                  class="hidden"
+                  type="file"
+                  id="followingsFileInput"
+                  @change="validateFile('followingsFileInput', 'following.json')"
+                >
+                <span v-if="fileTwoError" class="text-xs text-red-500 text-wrap">{{ fileTwoError }}</span>
+              </label>
             </div>
-            <div class="text-muted">
-              {{ timestampToDate(unfollower.timestamp) }}
-            </div>
-          </li>
-        </ol>                
-      </div>        
+          </div>
+          
+          <div class="flex justify-end gap-1">
+            <button
+              class="text-blue-500 text-sm hover:underline cursor-pointer px-3 py-1 rounded-md"
+              type="button"
+              @click="nextStep = false"
+            >
+              << View instructions
+            </button>
+            <button
+              class="w-fit text-sm bg-gradient-to-t from-blue-600 to-blue-400 text-white font-semibold px-3 py-1 border border-gray-200 shadow-md hover:shadow-none rounded-md cursor-pointer"
+              type="button"
+              @click="compareFiles"
+            >
+              Discover Unfollowers
+            </button>
+          </div>
+        </form>
+
+        <div v-else>
+          
+          <div class="flex justify-between items-center my-2 text-gray-500 text-xs">
+            <div class="flex gap-2">
+              <button
+                class="text-gray-500 hover:underline cursor-pointer"
+                @click="uploadNew"
+              >
+                << Upload New
+              </button>
+              <button
+                class="text-blue-500 hover:underline cursor-pointer"
+                @click="downloadHTML"
+              >
+                Download HTML
+              </button>
+            </div>    
+            <p>
+              {{ notInFollowers.filter(x => !x.hidden).length }} visible, {{ notInFollowers.filter(x => x.hidden).length }} hidden accounts
+            </p>
+          </div>
+      
+          <ol class="list-decimal">
+            <transition-group name="nonfollowers">
+              <li
+                v-for="(unfollower, index) in notInFollowers"
+                :key="unfollower.value"
+                class="px-4 py-3 flex justify-between items-center border-b border-x border-gray-200 transition-transform duration-300"
+                :class="{
+                  'border-t rounded-t-md': index === 0,
+                  'rounded-b-md' : index === notInFollowers.length - 1,
+                  'h-0 bg-gray-200' : unfollower.hidden
+                }"
+              >
+                <a
+                  v-if="!unfollower.hidden"
+                  :href="unfollower.href"
+                  target="_blank"
+                >
+                  {{ index + 1 }}. {{ unfollower.value }}
+                </a>
+                <!-- <span class="text-gray-500">
+                  {{ timestampToDate(unfollower.timestamp) }}
+                </span> -->
+                <div v-if="!unfollower.hidden" class="flex gap-1">
+                  <a
+                    class="text-sm border border-gray-200 shadow-sm rounded-md px-3 py-1 cursor-pointer hover:shadow-none hover:inset-shadow text-blue-500"
+                    target="_blank"
+                    :href="unfollower.href"
+                  >
+                    Visit
+                  </a>
+                  <button
+                    class="text-sm border border-gray-200 shadow-sm rounded-md px-2 py-1 cursor-pointer hover:shadow-none hover:inset-shadow"
+                    @click="unfollower.hidden = true"
+                    title="Hide"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-pointer text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <span
+                  v-else
+                  class="w-full text-sm text-end text-blue-500 hover:underline cursor-pointer"
+                  @click="unfollower.hidden = false"
+                >
+                  Show
+                </span>
+              </li>
+            </transition-group>
+          </ol>
+        </div>
+      </main>
+
+      <footer class="text-gray-500 mt-6 flex items-center justify-center">
+        <p class="inline-block">Created by <span class="text-blue-600 font-bold">{{ creator.name }}</span>, visit my</p>
+        <a
+          :href="creator.github"
+          target="_blank"
+          class="inline-flex gap-1 items-center hover:underline hover:text-blue-500"
+        >
+          <img
+            src="github-mark.png"
+            alt="GitHub Logo"
+            width="20"
+            height="20"
+            class="ml-1"
+          />
+          Github page
+        </a>
+      </footer>
       
     </div>
 
-    <div class="text-center text-muted mt-4">
-      <p class="d-inline align-items-center">
-        Created by <span class="text-primary fw-bold">{{ creator.name }}</span>, visit my GitHub page: 
-        <a :href="creator.github" target="_blank" class="d-inline align-items-center">
-          <img src="github-mark.png" alt="GitHub Logo" width="20" height="20" class="me-1 mb-1">
-        </a>
-      </p>
-    </div>    
+    <script type="module" defer>
+      const { createApp, ref } = Vue;
 
-  </div>
+      createApp({
+        data() {
+          return {
+            creator: {
+              name: "rulkimi",
+              github: "https://github.com/rulkimi",
+            },
+            nextStep: false,
+            notInFollowers: [
+              // { value: "John Doe", href: "https://johndoe.com", timestamp: Date.now()},
+              // { value: "Jane Doe", href: "https://janedoe.com", timestamp: Date.now() },
+              // { value: "Peter Jones", href: "https://peterjones.com", timestamp: Date.now() },
+              // { value: "Mary Smith", href: "https://marysmith.com", timestamp: Date.now() },
+              // { value: "David Brown", href: "https://davidbrown.com", timestamp: Date.now() }
+            ],
+            fileOneUploaded: false,
+            fileTwoUploaded: false,
 
-  <script type="module" defer>
-    const { createApp, ref } = Vue;
-
-    createApp({
-      data() {
-        return {
-          creator: {
-            name: 'rulkimi',
-            github: 'https://github.com/rulkimi'
-          },
-          nextStep: false,
-          notInFollowers: [],
-        };
-      },
-      methods: {
-        downloadHTML() {
-          const data = this.generateHTML();
-
-          const blob = new Blob([data], { type: 'text/html' });
-          const link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'non-followers.html';
-          link.click();
+            fileOneError: "",
+            fileTwoError: ""
+          };
         },
-        generateHTML() {
-          const accounts = [];
+        mounted() {
+          const cachedData = localStorage.getItem('data');
+          if (cachedData) {
+            this.notInFollowers = JSON.parse(cachedData);
+            this.nextStep = true;
+          } 
+        },
+        methods: {
+          uploadNew() {
+            if (!confirm('This will delete current list. Continue?')) return;
+            this.fileOneUploaded = false;
+            this.fileTwoUploaded = false;
+            localStorage.removeItem('data');
+            this.notInFollowers = [];
+          },
+          downloadHTML() {
+            const data = this.generateHTML();
 
-          this.notInFollowers.forEach(unfollower => {
-            const listItem = `
+            const blob = new Blob([data], { type: "text/html" });
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "non-followers.html";
+            link.click();
+          },
+          generateHTML() {
+            const accounts = [];
+
+            this.notInFollowers.forEach((unfollower) => {
+              const listItem = `
               <li style="cursor: pointer; list-style-type: none; margin-bottom: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                   <div style="display: flex; flex-direction: column; margin-bottom: 2px;">
@@ -146,10 +279,10 @@
                 </div>
               </li>
             `;
-            accounts.push(listItem);
-          });
+              accounts.push(listItem);
+            });
 
-          const HTMLContent = `
+            const HTMLContent = `
             <div style="justify-content: center; align-items: center; background-color: #f8f9fa;">
               <div style="margin: 0 auto; width: 80%; max-width: 600px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                 <h2 style="text-align: center; color: #0d6efd; font-weight: bold;" class="text-primary fw-bold">Non-followers</h2>
@@ -162,95 +295,143 @@
                   </div>
                 </div>
                 <ol style="list-style-type: none; padding: 0;" class="list-group">
-                  ${accounts.join('')}
+                  ${accounts.join("")}
                 </ol>
               </div>
             </div>
           `;
 
-          return HTMLContent;
-        },
-        timestampToDate(timestamp) {
-          const unixTimestamp = timestamp;
-          const date = new Date(unixTimestamp * 1000);
-          const options = { month: 'short', day: 'numeric', year: 'numeric' };
-          const formattedDate = date.toLocaleString('en-US', options);
-          return formattedDate;
-        },
-        navigateToLink(link) {
-          window.open(link, '_blank');
-        },
-        validateFile(inputId, expectedFileName) {
-          const inputElement = document.getElementById(inputId);
-          const file = inputElement.files[0];
+            return HTMLContent;
+          },
+          timestampToDate(timestamp) {
+            const unixTimestamp = timestamp;
+            const date = new Date(unixTimestamp * 1000);
+            const options = { month: "short", day: "numeric", year: "numeric" };
+            const formattedDate = date.toLocaleString("en-US", options);
+            return formattedDate;
+          },
+          navigateToLink(link) {
+            window.open(link, "_blank");
+          },
+          validateFile(inputId, expectedFileName) {
+            const inputElement = document.getElementById(inputId);
+            const file = inputElement.files[0];
 
-          if (file) {
-            const fileName = file.name.toLowerCase();
-            const expectedFileNameLowerCase = expectedFileName.toLowerCase();
+            if (file) {
+              const fileName = file.name.toLowerCase();
+              const expectedFileNameLowerCase = expectedFileName.toLowerCase();
 
-            if (!fileName.endsWith('.json') || fileName !== expectedFileNameLowerCase) {
-              alert(`Please upload a valid ${expectedFileName} file.`);
-              inputElement.value = '';  // Clear the input field
+              if (
+                !fileName.endsWith(".json") ||
+                fileName !== expectedFileNameLowerCase
+              ) {
+                if (expectedFileNameLowerCase === 'followers_1.json') {
+                  this.fileOneError = `Please upload a valid ${expectedFileName} file.`;
+                  this.fileOneUploaded = false;
+                } else {
+                  this.fileTwoError = `Please upload a valid ${expectedFileName} file.`;
+                  this.fileTwoUploaded = false;
+                }
+                inputElement.value = ""; // Clear the input field
+              } else {
+                this.fileOneError = '';
+                this.fileTwoError = '';
+                if (expectedFileNameLowerCase === 'followers_1.json') {
+                  this.fileOneUploaded = true;
+                } else if (expectedFileNameLowerCase === 'following.json') {
+                  this.fileTwoUploaded = true;
+                }
+              }
             }
-          }
-        },
-        compareFiles() {
-          const followersFileInput = document.getElementById('followersFileInput');
-          const followingsFileInput = document.getElementById('followingsFileInput');
+          },
+          compareFiles() {
+            const followersFileInput =
+              document.getElementById("followersFileInput");
+            const followingsFileInput = document.getElementById(
+              "followingsFileInput"
+            );
 
-          const followersJSON = followersFileInput.files[0];
-          const followingsJSON = followingsFileInput.files[0];
+            const followersJSON = followersFileInput.files[0];
+            const followingsJSON = followingsFileInput.files[0];
 
-          if (followersJSON && followingsJSON) {
-            // Use FileReader to read the content of the files
-            const followersFileReader = new FileReader();
-            const followingsFileReader = new FileReader();
+            if (followersJSON && followingsJSON) {
+              // Use FileReader to read the content of the files
+              const followersFileReader = new FileReader();
+              const followingsFileReader = new FileReader();
 
-            followersFileReader.onload = (e1) => {
-              followingsFileReader.onload = (e2) => {
-                const followersContent = e1.target.result;
-                const followingsContent = e2.target.result;
+              followersFileReader.onload = (e1) => {
+                followingsFileReader.onload = (e2) => {
+                  const followersContent = e1.target.result;
+                  const followingsContent = e2.target.result;
 
-                // Perform the comparison using the provided function
-                this.notInFollowers = this.compareFollowersAndFollowing(followersContent, followingsContent);
+                  // Perform the comparison using the provided function
+                  this.notInFollowers = this.compareFollowersAndFollowing(
+                    followersContent,
+                    followingsContent
+                  );
 
-                // Output the result
-                console.log('Entries present in following but not in followers:', this.notInFollowers);
-                alert('Comparison completed successfully! Results will be printed on the screen soon.');
+                  // console.log(
+                  //   "Entries present in following but not in followers:",
+                  //   this.notInFollowers
+                  // );
+                  // alert(
+                  //   "Comparison completed successfully! Results will be printed on the screen soon."
+                  // );
+                  localStorage.setItem("data", JSON.stringify(this.notInFollowers))
+                };
+
+                followingsFileReader.readAsText(followingsJSON);
               };
 
-              followingsFileReader.readAsText(followingsJSON);
-            };
+              followersFileReader.readAsText(followersJSON);
+            } else {
+              // alert("Please select both files.");
+              if (!followersJSON) this.fileOneError = `Please upload followers_1.json file.`;
+              if (!followingsJSON) this.fileTwoError = `Please upload following.json file.`;
+            }
+          },
+          compareFollowersAndFollowing(file1Content, file2Content) {
+            const followersData = JSON.parse(file1Content);
+            const followingData = JSON.parse(file2Content);
 
-            followersFileReader.readAsText(followersJSON);
-          } else {
-            alert('Please select both files.');
-          }
+            // Extract usernames and href from followers and following
+            const followersInfo = followersData.map((entry) => ({
+              value: entry.string_list_data[0]?.value,
+              href: entry.string_list_data[0]?.href,
+              timestamp: entry.string_list_data[0]?.timestamp,
+            }));
+            const followingInfo = followingData.relationships_following.map(
+              (entry) => ({
+                value: entry.string_list_data[0]?.value,
+                href: entry.string_list_data[0]?.href,
+                timestamp: entry.string_list_data[0]?.timestamp,
+              })
+            );
+
+            // Find entries in following but not in followers
+            return followingInfo.filter(
+              (followingEntry) =>
+                !followersInfo.some(
+                  (followerEntry) =>
+                    followerEntry.value === followingEntry.value
+                )
+            );
+          },
         },
-        compareFollowersAndFollowing(file1Content, file2Content) {
-          const followersData = JSON.parse(file1Content);
-          const followingData = JSON.parse(file2Content);
-
-          // Extract usernames and href from followers and following
-          const followersInfo = followersData.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href, timestamp: entry.string_list_data[0]?.timestamp }));
-          const followingInfo = followingData.relationships_following.map(entry => ({ value: entry.string_list_data[0]?.value, href: entry.string_list_data[0]?.href, timestamp: entry.string_list_data[0]?.timestamp }));
-
-          // Find entries in following but not in followers
-          return followingInfo.filter(followingEntry =>
-            !followersInfo.some(followerEntry => followerEntry.value === followingEntry.value)
-          );
-        }
+      }).mount("#app");
+    </script>
+    <style>
+      body {
+        background-color: #fafafa;
       }
-    }).mount('#app');
-  </script>
-  <style>
-    body {
-      background-color: #fafafa;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-  </style>
-</body>
+      .container {
+        max-width: 600px;
+        margin: auto;
+      }
+
+      .unfollowers-enter-active, .unfollowers-leave-active, .unfollowers-move {
+        transition: all 0.3s ease-in;
+      }
+    </style>
+  </body>
 </html>

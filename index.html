@@ -421,7 +421,7 @@
             }));
             const followingInfo = followingData.relationships_following.map(
               (entry) => ({
-                value: entry.string_list_data[0]?.value,
+                value: entry.string_list_data[0]?.title ?? entry.title,
                 href: entry.string_list_data[0]?.href,
                 timestamp: entry.string_list_data[0]?.timestamp,
               })
